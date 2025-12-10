@@ -10,6 +10,8 @@ const io = new Server(httpServer)
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const messages = []
+
 app.get("/", (req, res) => {
 	res.sendFile(__dirname + "/web/index.html")
 })
@@ -21,12 +23,14 @@ app.get("/script.js", (req, res) => {
 io.on("connection", (socket) => {
 	console.log("Someone Connected")
 
+	socket.emit("history", messages)
+
 	socket.on("disconnect", () => {
 		console.log("Someone Disconnected")
 	})
 
 	socket.on("message", (msg) => {
-		console.log(msg)
+		messages.push(msg)
 		io.emit("message", msg)
 	})
 })
