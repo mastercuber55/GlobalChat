@@ -1,13 +1,36 @@
 import express from "express"
 import http from "node:http"
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { Server } from "socket.io"
 
 const app = express()
-const server = http.createServer(app)
+const httpServer = http.createServer(app)
+const io = new Server(httpServer)
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.get("/", (req, res) => {
-	res.send("Haiiiiiii")
+	res.sendFile(__dirname + "/web/index.html")
 })
 
-server.listen(8080, () => {
+app.get("/script.js", (req, res) => {
+	res.sendFile(__dirname + "/web/script.js")
+})
+
+io.on("connection", (socket) => {
+	console.log("Someone Connected")
+
+	socket.on("disconnect", () => {
+		console.log("Someone Disconnected")
+	})
+
+	socket.on("message", (msg) => {
+		console.log(msg)
+		io.emit("message", msg)
+	})
+})
+
+httpServer.listen(8080, () => {
 	console.log("Running at 8080")
 })
