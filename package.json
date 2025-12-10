@@ -1,0 +1,24 @@
+{
+  "name": "globalchat",
+  "version": "1.0.0",
+  "description": "A global chat app on the web via websockets",
+  "homepage": "https://github.com/mastercuber55/GlobalChat#readme",
+  "bugs": {
+    "url": "https://github.com/mastercuber55/GlobalChat/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mastercuber55/GlobalChat.git"
+  },
+  "license": "MIT",
+  "author": "Cube Nerd",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "socket.io": "^4.8.1"
+  }
+}
