@@ -21,17 +21,23 @@ app.get("/script.js", (req, res) => {
 })
 
 io.on("connection", (socket) => {
-	console.log("Someone Connected")
+	
+	let name = socket.handshake.auth.name || "Anonymous"
 
 	socket.emit("history", messages)
 
+	io.emit("join", name);
+	messages.push({content: "joined the chat", user: name})
+
 	socket.on("disconnect", () => {
-		console.log("Someone Disconnected")
+		io.emit("leave", name)
+		messages.push({content: "left the chat", user: name})
 	})
 
 	socket.on("message", (msg) => {
-		messages.push(msg)
-		io.emit("message", msg)
+		const data = { content: msg, user: name }
+		messages.push(data)
+		io.emit("message", data)
 	})
 })
 
