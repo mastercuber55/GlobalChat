@@ -4,12 +4,37 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Global Chat</title>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+
 	<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 	<script defer src='./script.js'></script>
 </head>
 <body>
-	<ul id="messages"></ul>
-	<input id="messageToSend" type="text" name="message"/>
-	<button id="sendMessage" type="submit">Send</button>
+	<header class="container-fluid" style="position: fixed; background: var(--pico-background-color)">
+		<nav>
+		  <ul>
+		    <li><strong>Global Chat - Cube Nerd</strong></li>
+		  </ul>
+		  <ul>
+		    <li><a href="https://github.com/mastercuber55" target="_blank">Github</a></li>
+		    <li><a href="https://www.youtube.com/@mastercoder55" target="_blank">Youtube</a></li>
+		    <li><a href="https://discord.gg/7zvpWnE7QV" target="_blank">Discord</a></li>
+		  </ul>
+		</nav>
+	</header>
+	<main class="container-fluid">
+		<ul id="messages"></ul>
+		<form>	
+	  	<fieldset role="group">
+		    <input
+		      id="messageToSend"
+		      name="message"
+		      placeholder="Heyyyyyyyyyyyyy!!!!"
+		    />
+		    <button id="sendMessage" type="submit">Send</button>
+		  </fieldset>
+	</form>
+	</main>
 </body>
 </html>
