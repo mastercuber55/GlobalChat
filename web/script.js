@@ -1,19 +1,19 @@
 let name = localStorage.getItem('name');
 
-while(!name) name = prompt("What is your name??\nNOTE: You won't be able to change it.")
+while (!name) name = prompt("What is your name??\nNOTE: You won't be able to change it.")
 
 const socket = io({
-	auth: {	name }
+	auth: { name }
 })
 
 localStorage.setItem('name', name)
 
-if('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator) {
 	navigator.serviceWorker.register("sw.js")
-	.then(console.log)
-	.catch(console.error)
+		.then(console.log)
+		.catch(console.error)
 }
-
+	
 const messages = document.getElementById("messages");
 const input = document.getElementById("messageToSend")
 const submit = document.getElementById("sendMessage")
@@ -35,7 +35,7 @@ socket.on("history", msgs => {
 
 // THIS DOES NOT FIRE WHEN USING socket.emit, OKAY?
 // ITS EMITED ON THE SERVER NOT CLIENT!
-function appendMessage(txt) {
+async function appendMessage(txt) {
 	const item = document.createElement("li")
 	item.innerHTML = txt
 	messages.appendChild(item)
@@ -54,9 +54,9 @@ socket.on("leave", name => {
 	appendMessage(`<strong>${name}:</strong>left the chat!`)
 })
 
-input.addEventListener("keydown", (e) => {
-	if (e.key === "Enter") {
-		e.preventDefault()
+input.addEventListener("keydown", async (ev) => {
+	if (ev.key === "Enter") {
+		ev.preventDefault()
 
 		if (!input.value) return
 		socket.emit("message", input.value)
