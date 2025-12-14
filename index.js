@@ -1,6 +1,6 @@
 import express from "express"
 import http from "node:http"
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Server } from "socket.io"
 
@@ -12,13 +12,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const messages = []
 
-app.get("/", (req, res) => {
-	res.sendFile(__dirname + "/web/index.html")
-})
-
-app.get("/script.js", (req, res) => {
-	res.sendFile(__dirname + "/web/script.js")
-})
+app.use(express.static(join(__dirname, "web")));
 
 io.on("connection", (socket) => {
 	

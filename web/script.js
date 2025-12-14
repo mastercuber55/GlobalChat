@@ -1,7 +1,18 @@
-const name = prompt("WHAT IS YOUR NAME?!")
+let name = localStorage.getItem('name');
+
+while(!name) name = prompt("What is your name??\nNOTE: You won't be able to change it.")
+
 const socket = io({
 	auth: {	name }
 })
+
+localStorage.setItem('name', name)
+
+if('serviceWorker' in navigator) {
+	navigator.serviceWorker.register("sw.js")
+	.then(console.log)
+	.catch(console.error)
+}
 
 const messages = document.getElementById("messages");
 const input = document.getElementById("messageToSend")
