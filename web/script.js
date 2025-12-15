@@ -27,31 +27,32 @@ submit.addEventListener("click", () => {
 })
 
 socket.on("history", msgs => {
-	msgs.forEach(msg => {
-		const { user, content } = msg;
-		appendMessage(`<strong>${msg.user}:</strong>${msg.content}`)
-	})
+	msgs.forEach(msg => appendMessage(msg))
 })
 
 // THIS DOES NOT FIRE WHEN USING socket.emit, OKAY?
 // ITS EMITED ON THE SERVER NOT CLIENT!
-async function appendMessage(txt) {
+async function appendMessage(msg) {
 	const item = document.createElement("li")
-	item.innerHTML = txt
+	const user = document.createElement("b")
+	const content = document.createTextNode(msg.content)
+
+	user.textContent = msg.user + ": "
+	item.appendChild(user)
+	item.appendChild(content)
 	messages.appendChild(item)
+
 	window.scrollTo(0, document.body.scrollHeight)
 }
 
-socket.on("message", msg => {
-	appendMessage(`<b>${msg.user}:</b>${msg.content}`)
-})
+socket.on("message", msg => appendMessage(msg))
 
 socket.on("join", name => {
-	appendMessage(`<strong>${name}:</strong>joined the chat!`)
+	appendMessage({user: name, content: "joined the chat!"})
 })
 
 socket.on("leave", name => {
-	appendMessage(`<strong>${name}:</strong>left the chat!`)
+	appendMessage({user: name, content: "left the chat!"})
 })
 
 input.addEventListener("keydown", async (ev) => {

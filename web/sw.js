@@ -2,7 +2,9 @@ var cacheName = 'global-chat-pwa';
 var filesToCache = [
   '/',
   '/index.html',
-  '/script.js'
+  '/script.js',
+  '/pico.min.css',
+  "/socket.io.min.js"
 ];
 
 self.addEventListener('install', ev => {

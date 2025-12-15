@@ -21,11 +21,11 @@
 		socket.emit("history", messages)
 
 		io.emit("join", name);
-		messages.push({content: "joined the chat", user: name})
+		messages.push({content: "joined the chat!", user: name})
 
 		socket.on("disconnect", () => {
 			io.emit("leave", name)
-			messages.push({content: "left the chat", user: name})
+			messages.push({content: "left the chat!", user: name})
 		})
 
 		socket.on("message", (msg) => {
