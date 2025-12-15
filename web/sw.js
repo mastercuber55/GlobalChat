@@ -1,8 +1,8 @@
-var cacheName = 'global-chat-pwa';
+var cacheName = 'global-chat-pwa-v2';
 var filesToCache = [
   '/',
-  '/index.html',
-  '/script.js',
+  // '/index.html',
+  // '/script.js',
   '/pico.min.css',
   "/socket.io.min.js"
 ];
