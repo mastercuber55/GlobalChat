@@ -8,7 +8,8 @@
 	<link rel="stylesheet" href="/pico.min.css">
 	<link rel="manifest" href="/manifest.json">
 
-	<script src="./socket.io.min.js"></script>
+	<script defer src="./socket.io.min.js"></script>
+	<script defer src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 	<script defer src='./script.js'></script>
 </head>
 <body>
@@ -24,15 +25,19 @@
 		  </ul>
 		</nav>
 	</header>
-	<main class="container-fluid">
-		<ul id="messages"></ul>
+	<main class="container-fluid" id="app">
+		<ul id="messages">
+			<li v-for="msg in messages">
+				<b>{{ msg.user }}:</b> {{ msg.content }} 
+			</li>
+		</ul>
 	  	<fieldset role="group">
 		    <input
-		      id="messageToSend"
-		      name="message"
+		      v-model="input"
+		      @keydown.enter="send"
 		      placeholder="Heyyyyyyyyyyyyy!!!!"
 		    />
-		    <button id="sendMessage" type="submit">Send</button>
+		    <button @click="send">Send</button>
 		  </fieldset>	
 	</main>
 </body>
