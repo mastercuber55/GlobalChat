@@ -26,9 +26,15 @@
 		</nav>
 	</header>
 	<main class="container-fluid" id="app">
-		<ul id="messages">
+		<ul>
 			<li v-for="msg in messages">
-				<b>{{ msg.user }}:</b> {{ msg.content }} 
+				<template v-if="msg.type == 'system'">
+					<i>{{ msg.user }} {{ msg.content }} </i>
+				</template>
+
+				<template v-else>
+					<b>{{ msg.user }}:</b> {{ msg.content }}
+				</template> 
 			</li>
 		</ul>
 	  	<fieldset role="group">
