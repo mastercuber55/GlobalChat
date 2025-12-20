@@ -15,7 +15,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm i && cd web && npm i && npm run build && cd ..",
+    "serve": "node index.js"
   },
   "dependencies": {
     "chrome-types": "^0.1.395",

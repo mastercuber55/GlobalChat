@@ -12,7 +12,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const messages = []
 
-app.use(express.static(join(__dirname, "web")));	
+app.use(express.static(join(__dirname, "web/dist")));	
 
 io.on("connection", (socket) => {
 	
