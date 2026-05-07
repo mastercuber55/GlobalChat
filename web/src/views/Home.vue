@@ -6,9 +6,9 @@
     const messages = ref([])
     const input = ref("")
 
-    let name = localStorage.getItem('name');
-    while (!name) name = prompt("What is your name??\nNOTE: You won't be able to change it.")
-    localStorage.setItem('name', name)
+    let name = sessionStorage.getItem('name');
+    while (!name) name = prompt("What is your name??")
+    sessionStorage.setItem('name', name)
 
     const socket = io({ auth: { name } })
 
