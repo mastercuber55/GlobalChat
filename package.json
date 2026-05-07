@@ -27,8 +27,9 @@
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "eslint": "^9.39.1",
+    "@eslint/js": "^9.39.4",
+    "eslint": "^9.39.4",
+    "eslint-plugin-vue": "^10.9.1",
     "globals": "^16.5.0"
   }
 }

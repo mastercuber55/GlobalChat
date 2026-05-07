@@ -1,4 +1,5 @@
 import './assets/pico.min.css'
+import "./assets/chatbubble.css"
 
 import { createApp } from 'vue'
 import App from './App.vue'

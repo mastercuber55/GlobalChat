@@ -1,0 +1,37 @@
+.bubble {
+  display: inline-block;
+
+  width: auto;
+
+  padding: 8px;
+  border-radius: 9px;
+
+  background: #2b2b2b;
+  color: white;
+
+}
+
+.chat-list li {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 3px;
+}
+
+.chat-list li.me {
+  align-items: flex-end;
+}
+
+.chat-list li.other {
+  align-items: flex-start;
+}
+
+.chat-list li.system {
+  align-items: center;
+}
+
+.username {
+  display: block;
+  margin-bottom: 0.25rem;
+  opacity: 0.7;
+}
