@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header class="container-fluid" style="position: sticky; background: var(--pico-background-color);">
+  <header class="container-fluid" style="position: fixed; background: var(--pico-background-color);">
     <nav>
       <ul>
         <li><RouterLink to="/"><strong>Global Chat - Cube Nerd</strong></RouterLink></li>

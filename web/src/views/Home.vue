@@ -1,10 +1,11 @@
 <script setup>
 
-    import { ref } from "vue"
+    import { ref, watch, nextTick } from "vue"
     import { io } from "socket.io-client";
     
     const messages = ref([])
     const input = ref("")
+    const chatList = ref(null)
 
     let name = sessionStorage.getItem('name');
     while (!name) name = prompt("What is your name??")
@@ -16,17 +17,53 @@
       }
     )
 
-    socket.on("history", msgs => messages.value = msgs)
-    socket.on("message", msg => messages.value.push(msg))
+    socket.on("history", msgs => {
+      messages.value = msgs
+    })
 
-    socket.on("join", name => messages.value.push({ type: "system", user: name, content: "joined the chat!" }))
-    socket.on("leave", name => messages.value.push({ type: "system", user: name, content: "left the chat!" }))
+    socket.on("message", msg => {
+      messages.value.push(msg)
+    })
 
-    socket.on("connect", () => socket.emit("ready"))
+    socket.on("join", name => {
+      messages.value.push({ 
+        type: "system", 
+        user: name, 
+        content: "joined the chat!" 
+      })
+    })
+
+    socket.on("leave", name => {
+      messages.value.push({ 
+        type: "system", 
+        user: name, 
+        content: "left the chat!" 
+      })
+    })
+
+    socket.on("connect", () => {
+      socket.emit("ready")
+    })
+
+    watch(messages, async () => {
+      if (!chatList.value) return
+
+      const threshold = 100
+
+      const shouldScroll =
+        chatList.value.scrollTop +
+        chatList.value.clientHeight >=
+        chatList.value.scrollHeight - threshold
+
+      await nextTick()
+
+      if (shouldScroll) {
+        chatList.value.scrollTop = chatList.value.scrollHeight
+      }
+    }, { deep: true })
 
     const send = () => {
       if(!input.value) return;
-
 
       socket.emit("message", input.value)
       input.value = ""
@@ -52,7 +89,7 @@
 </script>
 
 <template>
-  <ul class="chat-list">
+  <ul ref="chatList" class="chat-list">
     <li v-for="(msg, index) in messages" :class="messageClass(msg)">
       <template v-if="msg.type == 'system'">
         <div class="system-message">
