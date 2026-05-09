@@ -1,10 +1,25 @@
+import { AttachmentBuilder } from "discord.js"
+
 export default ({ messages, io, webhook, name }, content) => {
 	const data = { type: "chat", content, user: name }
 	messages.push(data)
 	io.emit("message", data)
 
+	let webhookData = {}
+
+	if(content.length > 500) {
+		const file = new AttachmentBuilder(
+		  Buffer.from(content),
+		  { name: "message.txt" }
+		)
+
+		webhookData = { files: [file] }
+	} else {
+		webhookData = { content }
+	}
+
 	webhook.send({
-		content,
+		...webhookData,
 		username: name,
 		avatarURL: `https://api.dicebear.com/9.x/bottts/png?seed=${encodeURIComponent(name)}`
 	})

@@ -1,120 +1,43 @@
 <script setup>
+    import ChatMessage from "../components/ChatMessage.vue"
+    import { useChat } from "../composables/useChat"
+    import { useAutoScroll } from "../composables/useAutoScroll"
 
     import { ref, watch, nextTick } from "vue"
-    import { io } from "socket.io-client";
-    
-    const messages = ref([])
-    const input = ref("")
-    const chatList = ref(null)
 
     let name = sessionStorage.getItem('name');
     while (!name) name = prompt("What is your name??")
     sessionStorage.setItem('name', name)
 
-    const socket = io(import.meta.env.DEV ? "http://localhost:8080" : undefined,
-      {
-        auth: { name }
-      }
-    )
+    const input = ref("")
+    const chatList = ref(null)
+    const { messages, send } = useChat(name)
 
-    socket.on("history", msgs => {
-      messages.value = msgs
-    })
+    useAutoScroll(messages, chatList)
 
-    socket.on("message", msg => {
-      messages.value.push(msg)
-    })
-
-    socket.on("join", name => {
-      messages.value.push({ 
-        type: "system", 
-        user: name, 
-        content: "joined the chat!" 
-      })
-    })
-
-    socket.on("leave", name => {
-      messages.value.push({ 
-        type: "system", 
-        user: name, 
-        content: "left the chat!" 
-      })
-    })
-
-    socket.on("connect", () => {
-      socket.emit("ready")
-    })
-
-    watch(messages, async () => {
-      if (!chatList.value) return
-
-      const threshold = 100
-
-      const shouldScroll =
-        chatList.value.scrollTop +
-        chatList.value.clientHeight >=
-        chatList.value.scrollHeight - threshold
-
-      await nextTick()
-
-      if (shouldScroll) {
-        chatList.value.scrollTop = chatList.value.scrollHeight
-      }
-    }, { deep: true })
-
-    const send = () => {
-      if(!input.value) return;
-
-      socket.emit("message", input.value)
+    const submit = () => {
+      send(input.value)
       input.value = ""
-    }
-
-    const showUsername = (msg, index) => {
-      if (index === 0) return true
-
-      const prev = messages.value[index - 1]
-
-      if (prev.type === 'system') return true;
-
-      return prev.user !== msg.user
-    }
-
-    const messageClass = msg => {
-      if (msg.type === "system") return "system"
-
-      return msg.user === name
-        ? "me"
-        : "other"
     }
 </script>
 
 <template>
   <ul ref="chatList" class="chat-list">
-    <li v-for="(msg, index) in messages" :class="messageClass(msg)">
-      <template v-if="msg.type == 'system'">
-        <div class="system-message">
-          <i>{{ msg.user }} {{ msg.content }} </i> 
-        </div>
-      </template>   
-
-      <template v-else>
-        <div class="message-group">
-          <small v-if="showUsername(msg, index)" class="username">
-            {{ msg.user }}
-          </small>
-          <div class="bubble">
-            {{ msg.content }}
-          </div>
-        </div>
-      </template> 
-    </li>
+    <ChatMessage
+      v-for="(msg, index) in messages"
+      :key="index"
+      :msg="msg"
+      :index="index"
+      :messages="messages"
+      :name="name"
+    />
   </ul>
     <fieldset role="group">
-      <input
+      <textarea
         v-model="input"
-        @keydown.enter="send"
+        @keydown.enter.exact.prevent="submit"
         placeholder="Heyyyyyyyyyyyyy!!!!"
       />
-      <button @click="send">Send</button>
+      <button @click="submit">Send</button>
     </fieldset> 
 </template>

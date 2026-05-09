@@ -15,9 +15,9 @@ export default defineConfig({
       injectRegister: "auto",
       includeAssets: ["icon.png"],
       manifest: {
-        "name": "Global Chat",
-        "short_name": "ChatApp",
-        "description": "A real-time global chat app",
+        "name": "Enjin",
+        "short_name": "Enjin",
+        "description": "A minimal fast global chatting app without the concern for accounts.",
         "start_url": "/index.html",
         "display": "standalone",
         "icons": [
