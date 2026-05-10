@@ -66,6 +66,7 @@ client.on(Events.MessageCreate, msg => {
 	if(msg.attachments.size != 0)
 		data.content += "\n[Message has attachments]"
 
+	messages.push(data)
 	io.emit("message", data)
 
 })
