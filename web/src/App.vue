@@ -1,11 +1,12 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import Header from "./views/Header.vue"
+  import { RouterView } from 'vue-router'
+  import Header from "@/components/Header.vue"
 </script>
 
 <template>
   <Header/>
-  <main class="container-fluid">
-    <RouterView />
-  </main>
+  <RouterView />
 </template>
+
+<style>
+</style>

@@ -51,18 +51,34 @@ const messageClass = () => {
               </span>
             </summary>
 
-            <div class="bubble">
+            <article class="message">
               {{ msg.content }}
-            </div>
+            </article>
           </details>
         </template>
 
         <template v-else>
-          <div class="bubble">
+          <article class="message">
             {{ msg.content }}
-          </div>
+          </article>
         </template>
       </div>
     </template>
   </li>
 </template>
+
+<style scoped>
+
+.message {
+  padding: 10px;
+  border-radius: 8px;
+  margin: 0px
+}
+
+.username {
+  display: block;
+  margin-bottom: 0.25rem;
+  opacity: 1;
+}
+
+</style>

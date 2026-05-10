@@ -15,3 +15,10 @@
     </nav>
   </header>
 </template>
+
+<style scoped>
+header {
+  position:relative; 
+  background: var(--pico-code-background-color);
+}
+</style>
