@@ -1,7 +1,7 @@
 import { AttachmentBuilder } from "discord.js"
 import { Filter } from 'bad-words'
 
-const filter = new Filter()
+const filter = new Filter({ placeHolder: '#' })
 
 export default ({ messages, io, webhook, name, channel }, content) => {
 
