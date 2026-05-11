@@ -1,6 +1,12 @@
 import { AttachmentBuilder } from "discord.js"
+import Filter from 'bad-words'
+
+const filter = new Filter()
 
 export default ({ messages, io, webhook, name, channel }, content) => {
+
+	content = filter.clean(content)
+
 	const data = { type: "chat", content, user: name }
 	messages.push(data)
 	io.emit("message", data)
