@@ -1,6 +1,6 @@
 import { AttachmentBuilder } from "discord.js"
 
-export default ({ messages, io, webhook, name }, content) => {
+export default ({ messages, io, webhook, name, channel }, content) => {
 	const data = { type: "chat", content, user: name }
 	messages.push(data)
 	io.emit("message", data)
@@ -21,6 +21,11 @@ export default ({ messages, io, webhook, name }, content) => {
 	webhook.send({
 		...webhookData,
 		username: name,
-		avatarURL: `https://api.dicebear.com/9.x/bottts/png?seed=${encodeURIComponent(name)}`
+		avatarURL: `https://api.dicebear.com/9.x/bottts/png?seed=${encodeURIComponent(name)}`,
+		allowedMentions: { parse: [] }
 	})
+
+	if (content.includes("@everyone") || content.includes("@here")) {
+		channel.send(`-# Bro really trying pinging everyone`)
+	}
 }
