@@ -8,7 +8,7 @@ import { ref } from "vue"
 
 let name = sessionStorage.getItem('name');
 
-while (!name || !name.trim()) {
+while (!name || !name.trim() || name.length > 16) {
   name = prompt("What is your name??");
 }
 
