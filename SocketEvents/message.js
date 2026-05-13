@@ -1,7 +1,7 @@
 import { AttachmentBuilder } from "discord.js"
 import { Filter } from 'bad-words'
 
-const filter = new Filter({ placeHolder: '#' })
+const filter = new Filter({ placeHolder: '█' })
 
 export default ({ messages, io, webhook, name, channel }, content) => {
 
@@ -32,6 +32,6 @@ export default ({ messages, io, webhook, name, channel }, content) => {
 	})
 
 	if (content.includes("@everyone") || content.includes("@here")) {
-		channel.send(`-# Bro really trying pinging everyone`)
+		channel.send(`-# Bro really tried pinging everyone`)
 	}
 }

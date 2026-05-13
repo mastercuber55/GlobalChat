@@ -7,8 +7,13 @@ import { useAutoScroll } from "@/composables/useAutoScroll"
 import { ref } from "vue"
 
 let name = sessionStorage.getItem('name');
-while (!name) name = prompt("What is your name??")
-sessionStorage.setItem('name', name)
+
+while (!name || !name.trim()) {
+  name = prompt("What is your name??");
+}
+
+name = name.trim();
+sessionStorage.setItem('name', name);
 
 const input = ref("")
 const chatList = ref(null)
