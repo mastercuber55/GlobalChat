@@ -6,14 +6,22 @@ import { useAutoScroll } from "@/composables/useAutoScroll"
 
 import { ref } from "vue"
 
-let name = sessionStorage.getItem('name');
+const sanitizeName = (input = "") =>
+  input
+    .normalize("NFKC")
+    .replace(/[\u2800\u200B-\u200D\uFEFF]/g, "")
+    .replace(/\s+/g, " ")
+    .replace(/[^a-zA-Z0-9 _-]/g, "")
+    .trim()
+    .slice(0, 16)
 
-while (!name || !name.trim() || name.length > 16) {
-  name = prompt("What is your name??");
+let name = sanitizeName(sessionStorage.getItem("name"))
+
+while (!name || name.length < 2) {
+  name = sanitizeName(prompt("What is your name??"))
 }
 
-name = name.trim();
-sessionStorage.setItem('name', name);
+sessionStorage.setItem("name", name)
 
 const input = ref("")
 const chatList = ref(null)

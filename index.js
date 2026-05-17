@@ -24,6 +24,18 @@ const messages = []
 
 app.use(express.static(join(__dirname, "web/dist")));	
 
+const sanitizeName = (input = "") =>
+  ((name) =>
+    name.length >= 2
+      ? name.slice(0, 20)
+      : "Anonymous")(
+    input
+      .normalize("NFKC")
+      .replace(/[\u2800\u200B-\u200D\uFEFF]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+  )
+
 io.on("connection", async(socket) => {
 
 	const eventsPath = join(__dirname, "SocketEvents")
@@ -32,7 +44,7 @@ io.on("connection", async(socket) => {
 	const channel = await client.channels.fetch(process.env.CHANNEL)
 	const webhook = new WebhookClient({ url: process.env.WEBHOOK })
 
-	let name = socket.handshake.auth.name || "Anonymous"
+	let name = sanitizeName(socket.handshake.auth.name)
 
 	for (const file of eventFiles) {
 	    const eventName = file.replace(".js", "")
