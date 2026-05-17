@@ -48,7 +48,7 @@ io.on("connection", async(socket) => {
 process.on('unhandledRejection', error => {
   if(client.user === undefined) return;
 
-  client.channels.cache.get(client.settings.logchannel)?.send({
+  client.channels.fetch(process.env.CHANNEL)?.send({
     embeds: [new MessageEmbed()
       .setTitle(`❌ | ${error.name}`)
       .setColor('RED')
