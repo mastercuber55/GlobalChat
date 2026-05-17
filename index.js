@@ -45,19 +45,28 @@ io.on("connection", async(socket) => {
 	  }
 })
 
-process.on('unhandledRejection', error => {
-  if(client.user === undefined) return;
+process.on("unhandledRejection", async (error) => {
+  try {
+    if (!client.user) return;
 
-  client.channels.fetch(process.env.CHANNEL)?.send({
-    embeds: [new MessageEmbed()
-      .setTitle(`❌ | ${error.name}`)
-      .setColor('RED')
-      .setDescription(t(error.stack?.toString, 2000))
-      .setTimestamp()
-      .setThumbnail(client.user.avatarURL())
-    ]
-  })
-})
+    const channel = await client.channels.fetch(process.env.CHANNEL);
+
+    const embed = new EmbedBuilder()
+      .setTitle(`❌ | ${error?.name || "Unhandled Rejection"}`)
+      .setColor("Red")
+      .setDescription(
+        `\`\`\`\n${String(error?.stack || error).slice(0, 4000)}\n\`\`\``
+      )
+      .setTimestamp();
+
+    await channel.send({
+      embeds: [embed]
+    });
+
+  } catch (err) {
+    console.error("Failed to report error:", err);
+  }
+});
 
 client.once(Events.ClientReady, async(readyClient) => {
 	console.log(`Logged in as ${readyClient.user.tag}`)
