@@ -7,7 +7,7 @@ import { useAutoScroll } from "@/composables/useAutoScroll"
 import { ref } from "vue"
 
 const sanitizeName = (input = "") =>
-  input
+  String(input)
     .normalize("NFKC")
     .replace(/[\u2800\u200B-\u200D\uFEFF]/g, "")
     .replace(/\s+/g, " ")
