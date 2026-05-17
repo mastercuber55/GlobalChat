@@ -17,7 +17,7 @@ const sanitizeName = (input = "") =>
 
 let name = sanitizeName(sessionStorage.getItem("name"))
 
-while (!name || name.length < 2) {
+while (!name || name.length < 4 || name.length > 16) {
   name = sanitizeName(prompt("What is your name??"))
 }
 
