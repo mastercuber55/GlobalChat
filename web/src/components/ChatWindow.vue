@@ -7,7 +7,8 @@ import { useAutoScroll } from "@/composables/useAutoScroll"
 import { ref } from "vue"
 
 const sanitizeName = (input = "") =>
-  String(input)
+  (input ?? "")
+    .toString()
     .normalize("NFKC")
     .replace(/[\u2800\u200B-\u200D\uFEFF]/g, "")
     .replace(/\s+/g, " ")
@@ -17,7 +18,7 @@ const sanitizeName = (input = "") =>
 
 let name = sanitizeName(sessionStorage.getItem("name"))
 
-while (!name || name.length < 4 || name.length > 16) {
+while (!name || name.length < 4) {
   name = sanitizeName(prompt("What is your name??"))
 }
 
