@@ -45,6 +45,20 @@ io.on("connection", async(socket) => {
 	  }
 })
 
+process.on('unhandledRejection', error => {
+  if(client.user === undefined) return;
+
+  client.channels.cache.get(client.settings.logchannel)?.send({
+    embeds: [new MessageEmbed()
+      .setTitle(`❌ | ${error.name}`)
+      .setColor('RED')
+      .setDescription(t(error.stack?.toString, 2000))
+      .setTimestamp()
+      .setThumbnail(client.user.avatarURL())
+    ]
+  })
+})
+
 client.once(Events.ClientReady, async(readyClient) => {
 	console.log(`Logged in as ${readyClient.user.tag}`)
 	const channel = await client.channels.fetch(process.env.CHANNEL)
