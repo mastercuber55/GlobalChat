@@ -3,7 +3,7 @@ import Navbar from './components/Navbar.vue'
 import { Card, CardContent } from './components/ui/card';
 import { ref, nextTick } from "vue"
 import { Button } from './components/ui/button';
-import { ChevronRight } from "@lucide/vue"
+import { ChevronRight } from "lucide-vue-next"
 import { useSocket, session } from "@/composables/useSocket.js"
 
 const sanitizeName = (input: string | null | undefined = "") =>
