@@ -67,11 +67,11 @@ io.on("connection", async(socket) => {
 		content: `${socket.data.name} joined the chat!`,
     type: "system"
 	}
-
-	messages.push(message)
 	
 	socket.emit("history", messages)
-	io.emit("message", message);
+	
+  messages.push(message)
+  io.emit("message", message);
 
   channel.send({
 		embeds: [
