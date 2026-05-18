@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import Navbar from './components/Navbar.vue'
 import { Card, CardContent } from './components/ui/card';
-import { ref, nextTick } from "vue"
+import { ref, nextTick, watch } from "vue"
 import { Button } from './components/ui/button';
 import { ChevronRight } from "lucide-vue-next"
 import { useSocket, session } from "@/composables/useSocket.js"
+import { ScrollArea } from './components/ui/scroll-area';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from './components/ui/collapsible'
 
 const sanitizeName = (input: string | null | undefined = "") =>
   (input ?? "")
@@ -35,6 +41,7 @@ type Message = {
 }
 
 const socket = useSocket(name)
+const scrollArea = ref()
 const input = ref("")
 const textarea = ref()
 const messages = ref<Message[]>([])
@@ -56,6 +63,28 @@ function sendMessage() {
   input.value = ""
 }
 
+watch(() => messages.value.length, async () => {
+
+  const viewport = scrollArea.value?.$el?.querySelector(
+    '[data-slot="scroll-area-viewport"]'
+  )
+
+  if (!viewport) return
+
+  const threshold = 100
+
+  const wasNearBottom =
+    viewport.scrollTop +
+    viewport.clientHeight >=
+    viewport.scrollHeight - threshold
+
+  await nextTick()
+
+  if (wasNearBottom) {
+    viewport.scrollTop = viewport.scrollHeight
+  }
+})
+
 async function autoResizeTextarea() {
   await nextTick()
 
@@ -68,6 +97,10 @@ function isSameSender(i: number) {
   return messages.value[i].sender.ID === messages.value[i - 1].sender.ID
 }
 
+function isLongMessage(content: string) {
+  return content.length > 300 || content.split("\n").length > 8
+}
+
 </script>
 
 <template>
@@ -75,8 +108,8 @@ function isSameSender(i: number) {
     <Navbar />
     <div class="flex-1 p-2 min-h-0">
       <Card class="w-full h-full p-2 flex flex-col">
-        <CardContent class="flex-1 p-0 min-h-0 overflow-scroll">
-          <ScrollArea class="h-full w-full">
+        <CardContent class="flex-1 p-0 min-h-0">
+          <ScrollArea ref="scrollArea" class="h-full w-full">
             <div class="p-4 space-y-1 flex flex-col">
               <div v-for="(message, index) in messages" :key="message.ID" class="flex">
 
@@ -95,12 +128,31 @@ function isSameSender(i: number) {
                       {{ message.sender.name }}
                     </small>
 
-                    <span class="px-3 py-2 rounded-2xl wrap-break-word whitespace-pre-line" :class="message.sender.ID != session.ID
+                    <Collapsible v-if="isLongMessage(message.content)" class="max-w-full">
+
+                      <div class="px-3 py-2 rounded-2xl" :class="message.sender.ID != session.ID
+                        ? 'bg-accent text-foreground'
+                        : 'bg-primary text-primary-foreground'">
+                        <CollapsibleContent forceMount class="data-[state=closed]:max-h-32 overflow-hidden">
+                          <div class="break-words whitespace-pre-line">
+                            {{ message.content }}
+                          </div>
+                        </CollapsibleContent>
+                      </div>
+
+                      <CollapsibleTrigger as-child>
+                        <Button variant="ghost" size="sm" class="h-7 px-2 text-xs mt-1">
+                          Show more
+                        </Button>
+                      </CollapsibleTrigger>
+
+                    </Collapsible>
+
+                    <span v-else class="px-3 py-2 rounded-2xl break-words whitespace-pre-line" :class="message.sender.ID != session.ID
                       ? 'bg-accent text-foreground'
                       : 'bg-primary text-primary-foreground'">
                       {{ message.content }}
                     </span>
-
                   </div>
                 </div>
 
@@ -110,13 +162,8 @@ function isSameSender(i: number) {
           </ScrollArea>
         </CardContent>
         <CardFooter class="flex gap-2 shrink-0">
-          <textarea 
-            class="border-2 rounded-(--radius) flex-1 min-h-12 max-h-16 resize-none transition-all duration-500"
-            ref="textarea" 
-            v-model="input" 
-            @input="autoResizeTextarea" 
-            @keydown.enter.exact.prevent="sendMessage" 
-          />
+          <textarea class="border-2 rounded-(--radius) flex-1 min-h-12 max-h-16 resize-none transition-all duration-500"
+            ref="textarea" v-model="input" @input="autoResizeTextarea" @keydown.enter.exact.prevent="sendMessage" />
           <Button class="self-stretch h-full aspect-square" @click="sendMessage">
             <ChevronRight />
           </Button>
