@@ -3,13 +3,23 @@ import { Filter } from 'bad-words'
 
 const filter = new Filter({ placeHolder: '█' })
 
-export default ({ messages, io, webhook, name, channel }, content) => {
+export default ({ messages, io, webhook, channel, socket }, content) => {
 
 	content = filter.clean(content)
 
-	const data = { type: "chat", content, user: name }
-	messages.push(data)
-	io.emit("message", data)
+	const message = {
+		ID: crypto.randomUUID(),
+		sender: {
+			ID: socket.data.ID,
+			name: socket.data.name 
+		},
+		content,
+		type: "chat"
+	}
+
+	messages.push(message)
+
+	io.emit("message", message)
 
 	let webhookData = {}
 
@@ -26,8 +36,8 @@ export default ({ messages, io, webhook, name, channel }, content) => {
 
 	webhook.send({
 		...webhookData,
-		username: name,
-		avatarURL: `https://api.dicebear.com/9.x/bottts/png?seed=${encodeURIComponent(name)}`,
+		username: socket.data.name,
+		avatarURL: `https://api.dicebear.com/9.x/bottts/png?seed=${encodeURIComponent(socket.data.name)}`,
 		allowedMentions: { parse: [] }
 	})
 

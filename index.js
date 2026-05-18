@@ -10,9 +10,7 @@ import dotenv from "dotenv"
 const app = express()
 const httpServer = http.createServer(app)
 const io = new Server(httpServer, {
-  cors: {
-    origin: "http://localhost:5173"
-  }
+  cors: true
 })
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] })
@@ -44,7 +42,11 @@ io.on("connection", async(socket) => {
 	const channel = await client.channels.fetch(process.env.CHANNEL)
 	const webhook = new WebhookClient({ url: process.env.WEBHOOK })
 
-	let name = sanitizeName(socket.handshake.auth.name)
+  socket.data = {
+    name: sanitizeName(socket.handshake.auth.name),
+    ID: crypto.randomUUID()
+  }
+  socket.emit("sessionID", socket.data.ID)
 
 	for (const file of eventFiles) {
 	    const eventName = file.replace(".js", "")
@@ -52,9 +54,32 @@ io.on("connection", async(socket) => {
 	    const event = await import(`./SocketEvents/${file}`)
 
 	    socket.on(eventName, (...args) => {
-	      event.default({ messages, channel, webhook, name, io, socket }, ...args)
+	      event.default({ messages, io, socket, channel, webhook }, ...args)
 	    })
 	  }
+
+  const message = {
+		ID: crypto.randomUUID(),
+		sender: {
+			ID: "1",
+			name: "System"
+		},
+		content: `${socket.data.name} joined the chat!`,
+    type: "system"
+	}
+
+	messages.push(message)
+	
+	socket.emit("history", messages)
+	io.emit("message", message);
+
+  channel.send({
+		embeds: [
+			new EmbedBuilder()
+				.setColor("Green")
+				.setDescription(`${socket.data.name} joined the chat!`)
+		]
+	})
 })
 
 process.on("unhandledRejection", async (error) => {
@@ -83,8 +108,8 @@ process.on("unhandledRejection", async (error) => {
 client.once(Events.ClientReady, async(readyClient) => {
 	console.log(`Logged in as ${readyClient.user.tag}`)
 	const channel = await client.channels.fetch(process.env.CHANNEL)
-	
-	httpServer.listen(8080, async() => {
+
+  httpServer.listen(8080, async() => {
 		const embed = new EmbedBuilder()
 			.setDescription("✅ The application is now online")
 			.setColor("Green")
@@ -96,13 +121,22 @@ client.once(Events.ClientReady, async(readyClient) => {
 client.on(Events.MessageCreate, msg => {
 	if(msg.channel.id != process.env.CHANNEL || msg.webhookId || msg.author.bot) return;
 	const { content, author } = msg
-	const data = { type: "chat", content, user: "🌐" + author.username }
+
+  const message = {
+		ID: crypto.randomUUID(),
+		sender: {
+			ID: author.id,
+			name: `🌐・${author.username}`
+		},
+		content,
+    type: "chat"
+	}
 
 	if(msg.attachments.size != 0)
-		data.content += "\n[Message has attachments]"
+		message.content += `${message.content ? "\n" : ""}[Message has attachments]`
 
-	messages.push(data)
-	io.emit("message", data)
+	messages.push(message)
+	io.emit("message", message)
 
 })
 
