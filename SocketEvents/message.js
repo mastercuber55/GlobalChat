@@ -37,7 +37,7 @@ export default ({ messages, io, webhook, channel, socket }, content) => {
 	webhook.send({
 		...webhookData,
 		username: socket.data.name,
-		avatarURL: `https://api.dicebear.com/9.x/bottts/png?seed=${encodeURIComponent(socket.data.name)}`,
+		avatarURL: `https://api.dicebear.com/9.x/bottts-neutral/png?seed=${encodeURIComponent(socket.data.ID)}`,
 		allowedMentions: { parse: [] }
 	})
 
